@@ -11,19 +11,22 @@ client = OpenAI(
     api_key=api_key,
 )
 
-def call_api(messages,tools=None):
+
+def call_api(ques):
     completion = client.chat.completions.create(
-    extra_headers={
-      "HTTP-Referer": "<YOUR_SITE_URL>", # Optional. Site URL for rankings on openrouter.ai.
-      "X-Title": "<YOUR_SITE_NAME>", # Optional. Site title for rankings on openrouter.ai.
-    },
-    extra_body={},
-    model="openai/o4-mini",
-    tools=tools,
-    temperature = 0.8,
-    messages= messages
-  )
-    return completion
+        model="openai/o4-mini",
+        web_search_options={},
+
+        messages=[
+            {
+                "role": "user",
+                "content": ques,
+            }
+        ],
+        max_tokens=5000,
+    )
+
+    return completion.choices[0].message.content
 
 if __name__ == "__main__":
 
@@ -31,3 +34,4 @@ if __name__ == "__main__":
     result = call_api(ques)
 
     print(result)
+
